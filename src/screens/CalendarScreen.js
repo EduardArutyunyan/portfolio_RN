@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Calendar } from '../components/Calendar';
 
 
-export const CalendarScreen = () => {
+export const CalendarScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <Text>Calendar</Text>
             <Calendar />
         </View>
     )

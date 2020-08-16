@@ -16,12 +16,14 @@ export const Month = ({date, events, ...props}) => {
     const startWeekDay = weekdayCalc(date);
 
     const renderBody = () => {
-        let emptiesFilled = startWeekDay > 0 
-            ? [Array(startWeekDay - 1).fill(''), ...month] : month;
+        let filled = startWeekDay > 0 
+            ? [...Array(startWeekDay - 1).fill(''), ...month] : month;
         
-        let weeks = Array(Math.ceil(month.length / 7)).fill([]);
+        let weeks = Array(Math.ceil(month.length / 7) + 1).fill([]);
         
-        emptiesFilled = emptiesFilled.map((item, index) => {
+        filled = filled.map((item, index) => {
+            let isWeekEnd = (index - 5) % 7 === 0 || (index - 6) % 7 === 0;
+            
             if(typeof item !== 'number') {
                 return (
                     <View 
@@ -32,15 +34,17 @@ export const Month = ({date, events, ...props}) => {
                         key={(index*100).toString() + item.toString()}
                     />
                 )
-            } else return (
-                <TouchableOpacity style={styles.dayItem} key={index.toString()}>
-                    <Text style={styles.dayItemText}>{item}</Text>
-                </TouchableOpacity>
-            )
+            } else {
+                return (
+                    <TouchableOpacity style={{...styles.dayItem, ...(isWeekEnd ? styles.weekEndDayItem : null) }} key={index.toString()}>
+                        <Text style={{...styles.dayItemText, ...(isWeekEnd ? styles.weekEndDayItemText : null)}}>{item}</Text>
+                    </TouchableOpacity>
+                )
+            }
         });        
 
         return weeks.map((week, index) => {
-            week = emptiesFilled.slice(index * 7, (index + 1) * 7);
+            week = filled.slice(index * 7, (index + 1) * 7);
             
             return (
                 <View 
@@ -48,7 +52,9 @@ export const Month = ({date, events, ...props}) => {
                         ...styles.weekRow,
                         ...(week.length < 7 ? {justifyContent: 'flex-start'} : null)
                     }} 
-                    key={index.toString()}>{week}</View>
+                    key={index.toString()}>
+                    {week}
+                </View>
             )
         });
     }
@@ -70,7 +76,12 @@ export const Month = ({date, events, ...props}) => {
     
 
     return (
-        <View>
+        <View style={{marginVertical: 20}}>
+            <View style={styles.monthTitle}>
+                <Text style={styles.monthTitleText}>
+                    {locales[props.lang].monthNames[date.getMonth()]}
+                </Text>
+            </View>
             {renderHeader()}
             {renderBody()}
         </View>
@@ -86,15 +97,25 @@ const device = {
     height: Dimensions.get('window').height
 }
 
-const dayItemSize = device.width *.8 / 7;
+const dayItemSize = device.width *.75 / 7;
 
 const styles = StyleSheet.create({
+    monthTitle: {
+        width: '100%',
+        justifyContent: 'flex-start',
+        marginBottom: 10,
+    },
+    monthTitleText: {
+        fontSize: 24,
+        fontFamily: 'open-bold',
+        paddingHorizontal: 20
+    },
     weekRow: {        
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginVertical: 5,
-        paddingHorizontal: 15
+        marginHorizontal: 10
     },
     dayItem: {
         width: dayItemSize,
@@ -104,6 +125,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0fff0',
         marginHorizontal: 5,
         borderRadius: 5
+    },
+    weekEndDayItem: {
+        backgroundColor: '#ada'
+    },
+    weekEndDayItemText: {
+
     },
     dayItemDisable: {
         width: dayItemSize,

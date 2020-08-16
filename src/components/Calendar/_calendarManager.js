@@ -40,5 +40,30 @@ export const locales = {
             'Вс',
         ]
         
-    }
+    },
+    'en': {
+        monthNames: [
+            'January',
+            'February',	
+            'March',	
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',	
+            'November',
+            'December'
+        ],
+        weekDaysNamesShort: [
+            'Mon',
+            'Tue',
+            'Wed',
+            'Thu',
+            'Fri',
+            'Sat',
+            'Sun'
+        ]
+    },
 }
