@@ -13,6 +13,7 @@ export const Calendar = ({}) => {
     const [dates, setDates] = useState([new Date()])
     const [loadPrev, setLoadPrev] = useState(false);
     const [loadNext, setLoadNext] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const flatListRef = useRef(null);
 
@@ -32,11 +33,11 @@ export const Calendar = ({}) => {
         
     }, [loadPrev, loadNext])
 
-    const getPrevMonth = () => {
+    const getPrevMonth = async () => {
         setDates([new Date(dates[0].getFullYear(), dates[0].getMonth(), 0), ...dates]);
     }
 
-    const getNextMonth = () => {
+    const getNextMonth = async () => {
         setDates([...dates, new Date(
                 dates[(dates.length - 1)]
                     .getFullYear(), dates[(dates.length - 1)]
@@ -44,23 +45,39 @@ export const Calendar = ({}) => {
             )]
         );
     }
-    console.log(dates)
+    
+    const handleScroll = async ({contentOffset, contentSize, layoutMeasurement}) => {
+        //console.log('contentOffset:',contentOffset, 'contentSize:',contentSize, 'layoutMeasurement:', layoutMeasurement);
+
+        if(contentOffset.y < 100) {
+            setLoading(true);
+            await getPrevMonth();
+        } else if ((contentSize.height - layoutMeasurement.height - 200) < contentOffset.y) {
+            setLoading(true);
+            await getNextMonth();
+        }
+        setLoading(false);
+    }
 
     return (
         <View style={styles.container}>
-            <Button title={'+'} onPress={() => setLoadPrev(true)}/>
             <FlatList 
                 ref={flatListRef}
+                refreshing={loading}
+                onRefresh={() => null}
+                
+                onScroll={({nativeEvent}) => handleScroll(nativeEvent)}
                 keyExtractor={item => item.toJSON()}
                 data={dates}
                 renderItem={({item}) => {
-                    return <Month 
-                                date={item}
-                                lang={'ru'}
-                            />
+                    return (
+                        <Month 
+                            date={item}
+                            lang={'en'}
+                        />
+                    )
                 }}
             />
-            <Button title={'+'} onPress={() => setLoadNext(true)}/>
         </View>
     )
 }

@@ -11,7 +11,7 @@ const dayItemSize = device.width *.75 / 7;
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: device.width
+        width: device.width,
     },
     monthTitle: {
         width: '100%',
@@ -65,5 +65,5 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#000'
-    }
+    },
 })
