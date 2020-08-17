@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
 
 import { lastDayCalc, weekdayCalc, locales } from './_calendarManager';
+import { styles } from './styles';
 
 
 export const Month = ({date, events, ...props}) => {
@@ -36,8 +35,19 @@ export const Month = ({date, events, ...props}) => {
                 )
             } else {
                 return (
-                    <TouchableOpacity style={{...styles.dayItem, ...(isWeekEnd ? styles.weekEndDayItem : null) }} key={index.toString()}>
-                        <Text style={{...styles.dayItemText, ...(isWeekEnd ? styles.weekEndDayItemText : null)}}>{item}</Text>
+                    <TouchableOpacity 
+                        style={{
+                            ...styles.dayItem,
+                            ...(isWeekEnd ? styles.weekEndDayItem : null) 
+                        }} 
+                        key={index.toString()}>
+                        <Text style={{
+                            ...styles.dayItemText,
+                            ...(isWeekEnd ? styles.weekEndDayItemText : null)
+                        }}
+                        >
+                            {item}
+                        </Text>
                     </TouchableOpacity>
                 )
             }
@@ -62,14 +72,21 @@ export const Month = ({date, events, ...props}) => {
     const renderHeader = () => {
         
         return (
-            <View style={{...styles.weekRow, ...styles.monthWeekHeaderRow, ...props.monthWeekHeaderRowStyle}}>
+            <View style={{
+                    ...styles.weekRow,
+                    ...styles.monthWeekHeaderRow,
+                    ...props.monthWeekHeaderRowStyle
+                }}>
                 {locales[props.lang].weekDaysNamesShort.map(item => {
-                        return <Text 
-                            style={styles.monthWeekHeaderText}
-                            key={item.toString()}>
-                            {item}
-                        </Text>}
-                    )}
+                        return (
+                            <Text 
+                                style={styles.monthWeekHeaderText}
+                                key={item.toString()}>
+                                {item}
+                            </Text>
+                        )}
+                    )
+                }
             </View>
         )
     }
@@ -81,75 +98,12 @@ export const Month = ({date, events, ...props}) => {
                 <Text style={styles.monthTitleText}>
                     {locales[props.lang].monthNames[date.getMonth()]}
                 </Text>
+                <Text style={styles.monthTitleText}>
+                    {date.getFullYear()}
+                </Text>
             </View>
             {renderHeader()}
             {renderBody()}
         </View>
     )
 }
-
-
-
-
-
-const device = {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height
-}
-
-const dayItemSize = device.width *.75 / 7;
-
-const styles = StyleSheet.create({
-    monthTitle: {
-        width: '100%',
-        justifyContent: 'flex-start',
-        marginBottom: 10,
-    },
-    monthTitleText: {
-        fontSize: 24,
-        fontFamily: 'open-bold',
-        paddingHorizontal: 20
-    },
-    weekRow: {        
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginVertical: 5,
-        marginHorizontal: 10
-    },
-    dayItem: {
-        width: dayItemSize,
-        height: dayItemSize,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f0fff0',
-        marginHorizontal: 5,
-        borderRadius: 5
-    },
-    weekEndDayItem: {
-        backgroundColor: '#ada'
-    },
-    weekEndDayItemText: {
-
-    },
-    dayItemDisable: {
-        width: dayItemSize,
-        height: dayItemSize,
-        backgroundColor: '#cccccc70'
-    },
-    dayItemText: {
-        fontSize: 16,
-        fontWeight: '700',
-    },
-    monthWeekHeaderRow: {
-        marginBottom: 10,
-    },
-    monthWeekHeaderText: {
-        width: dayItemSize,
-        marginHorizontal: 5,
-        textAlign: 'center',
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#000'
-    }
-})
